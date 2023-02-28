@@ -6,6 +6,7 @@ import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { ImSpinner } from 'react-icons/im';
 import { fetchPixabay } from 'services/pixabay-api';
+import { Button } from 'components/Button/Button';
 
 export class App extends Component {
   state = {
@@ -54,6 +55,10 @@ export class App extends Component {
     this.setState({ searchQuery: inputValue, loadedImages: [], page: 1 });
   };
 
+  handleLoadMoreClick = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
   render() {
     const { loadedImages, status, searchQuery } = this.state;
 
@@ -77,6 +82,10 @@ export class App extends Component {
         )}
 
         {status === 'resolved' && <ImageGallery loadedImages={loadedImages} />}
+
+        {loadedImages.length > 0 && (
+          <Button text="Load more" onClick={this.handleLoadMoreClick}></Button>
+        )}
 
         <ToastContainer />
       </Container>
