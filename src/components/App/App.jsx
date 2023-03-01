@@ -127,7 +127,7 @@ export class App extends Component {
           />
         )}
 
-        {loadedImages.length > 0 && (
+        {loadedImages.length > 0 && status !== 'pending' && (
           <Button text="Load more" onClick={this.handleLoadMoreClick}></Button>
         )}
 
