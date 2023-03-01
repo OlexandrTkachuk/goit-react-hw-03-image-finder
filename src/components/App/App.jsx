@@ -22,6 +22,7 @@ export class App extends Component {
       link: '',
       alt: '',
     },
+    totalPages: 0,
   };
 
   componentDidUpdate = (_, prevState) => {
@@ -39,6 +40,7 @@ export class App extends Component {
           this.setState({
             loadedImages: [...loadedImages, ...data.hits],
             status: 'resolved',
+            totalPages: Math.floor(data.totalHits / 12),
           });
         });
       } catch (error) {
@@ -89,8 +91,15 @@ export class App extends Component {
   };
 
   render() {
-    const { loadedImages, status, searchQuery, isModalOpen, imageInModal } =
-      this.state;
+    const {
+      loadedImages,
+      status,
+      searchQuery,
+      isModalOpen,
+      imageInModal,
+      totalPages,
+      page,
+    } = this.state;
 
     return (
       <Container>
@@ -127,9 +136,14 @@ export class App extends Component {
           />
         )}
 
-        {loadedImages.length > 0 && status !== 'pending' && (
-          <Button text="Load more" onClick={this.handleLoadMoreClick}></Button>
-        )}
+        {loadedImages.length > 0 &&
+          status !== 'pending' &&
+          page <= totalPages && (
+            <Button
+              text="Load more"
+              onClick={this.handleLoadMoreClick}
+            ></Button>
+          )}
 
         {isModalOpen && (
           <Modal
