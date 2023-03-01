@@ -6,7 +6,6 @@ import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
 import { Modal } from 'components/Modal/Modal';
-
 import { fetchPixabay } from 'services/pixabay-api';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 
@@ -129,12 +128,10 @@ export class App extends Component {
           </div>
         )}
 
-        {status === 'resolved' && (
-          <ImageGallery
-            loadedImages={loadedImages}
-            onClick={this.handleImageClick}
-          />
-        )}
+        <ImageGallery
+          loadedImages={loadedImages}
+          onClick={this.handleImageClick}
+        ></ImageGallery>
 
         {loadedImages.length > 0 &&
           status !== 'pending' &&
