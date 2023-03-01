@@ -4,9 +4,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
-import { ImSpinner } from 'react-icons/im';
-import { fetchPixabay } from 'services/pixabay-api';
 import { Button } from 'components/Button/Button';
+import { Modal } from 'components/Modal/Modal';
+
+import { fetchPixabay } from 'services/pixabay-api';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
 export class App extends Component {
   state = {
@@ -15,31 +17,37 @@ export class App extends Component {
     page: 1,
     error: null,
     status: 'idle',
+    isModalOpen: false,
+    imageInModal: {
+      link: '',
+      alt: '',
+    },
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = (_, prevState) => {
     const { page, loadedImages, searchQuery } = this.state;
     const prevQueryValue = prevState.searchQuery;
     const currentQueryValue = searchQuery;
 
     if (prevQueryValue !== currentQueryValue || prevState.page !== page) {
-      this.setState({ status: 'pending' });
+      try {
+        this.setState({ status: 'pending' });
 
-      fetchPixabay(searchQuery, page)
-        .then(data => {
+        fetchPixabay(searchQuery, page).then(data => {
           this.showNotification(data);
 
-          if (data.hits.length === 0) {
-            this.setState({ status: 'rejected' });
-            return;
-          } else {
-            return this.setState({
-              loadedImages: [...loadedImages, ...data.hits],
-              status: 'resolved',
-            });
-          }
-        })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+          this.setState({
+            loadedImages: [...loadedImages, ...data.hits],
+            status: 'resolved',
+          });
+        });
+      } catch (error) {
+        this.setState({ error: true });
+
+        toast.error('Oops, something went wrong :(');
+
+        console.log(error);
+      }
     }
   };
 
@@ -59,20 +67,51 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  handleImageClick = image => {
+    const { largeImageURL, tags } = image;
+
+    this.setState({
+      status: 'pending',
+      isModalOpen: true,
+      imageInModal: {
+        link: largeImageURL,
+        alt: tags,
+      },
+    });
+  };
+
+  handleModalImageLoaded = () => {
+    this.setState({ status: 'resolved' });
+  };
+
+  handleModalClose = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   render() {
-    const { loadedImages, status, searchQuery } = this.state;
+    const { loadedImages, status, searchQuery, isModalOpen, imageInModal } =
+      this.state;
 
     return (
       <Container>
         <Searchbar onSubmit={this.handleFormSubmit} />
 
-        {status === 'idle' && <div>Введіть текст для пошуку зображення</div>}
+        {status === 'idle' && (
+          <div style={{ textAlign: 'center' }}>
+            Введіть текст для пошуку зображення
+          </div>
+        )}
 
         {status === 'pending' && (
-          <div>
-            <ImSpinner size="32" className="icon-spin" />
-            Загружаем...
-          </div>
+          <PacmanLoader
+            color="#3f51b5"
+            size="30px"
+            cssOverride={{
+              display: 'block',
+              margin: '0 auto ',
+              borderColor: '#3f51b5',
+            }}
+          />
         )}
 
         {status === 'rejected' && (
@@ -81,10 +120,23 @@ export class App extends Component {
           </div>
         )}
 
-        {status === 'resolved' && <ImageGallery loadedImages={loadedImages} />}
+        {status === 'resolved' && (
+          <ImageGallery
+            loadedImages={loadedImages}
+            onClick={this.handleImageClick}
+          />
+        )}
 
         {loadedImages.length > 0 && (
           <Button text="Load more" onClick={this.handleLoadMoreClick}></Button>
+        )}
+
+        {isModalOpen && (
+          <Modal
+            image={imageInModal}
+            onClose={this.handleModalClose}
+            onLoad={this.handleModalImageLoaded}
+          ></Modal>
         )}
 
         <ToastContainer />
