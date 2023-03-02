@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
+import { MdImageSearch } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import {
   Header,
@@ -50,7 +51,7 @@ export class Searchbar extends Component {
       <Header>
         <SearchForm onSubmit={this.handleSubmit}>
           <SearchFormButton type="submit">
-            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+            <MdImageSearch size="30px" fill="red" />
           </SearchFormButton>
 
           <SearchFormInput
