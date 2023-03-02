@@ -7,7 +7,7 @@ import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
 import { Modal } from 'components/Modal/Modal';
 import { fetchPixabay } from 'services/pixabay-api';
-import PacmanLoader from 'react-spinners/PacmanLoader';
+import { Circles } from 'react-loader-spinner';
 
 export class App extends Component {
   state = {
@@ -110,15 +110,23 @@ export class App extends Component {
           </div>
         )}
 
+        <ImageGallery
+          loadedImages={loadedImages}
+          onClick={this.handleImageClick}
+        ></ImageGallery>
+
         {status === 'pending' && (
-          <PacmanLoader
-            color="#3f51b5"
-            size="30px"
-            cssOverride={{
+          <Circles
+            height="80"
+            width="80"
+            color="#4fa94d"
+            ariaLabel="circles-loading"
+            wrapperStyle={{
               display: 'block',
               margin: '0 auto ',
-              borderColor: '#3f51b5',
             }}
+            wrapperClass=""
+            visible={true}
           />
         )}
 
@@ -127,11 +135,6 @@ export class App extends Component {
             <p>Пошук за значенням {searchQuery} не дав результату</p>
           </div>
         )}
-
-        <ImageGallery
-          loadedImages={loadedImages}
-          onClick={this.handleImageClick}
-        ></ImageGallery>
 
         {loadedImages.length > 0 &&
           status !== 'pending' &&

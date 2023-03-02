@@ -9,6 +9,7 @@ export const StyledButton = styled.button`
   display: inline-block;
   color: #fff;
   border: 0;
+  margin-bottom: 100px;
   text-decoration: none;
   cursor: pointer;
   font-family: inherit;
