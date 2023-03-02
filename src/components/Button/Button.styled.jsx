@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const StyledButton = styled.button`
-  padding: 8px 16px;
+  padding: 16px 16px;
   border-radius: 2px;
   background-color: #3f51b5;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -9,7 +9,10 @@ export const StyledButton = styled.button`
   display: inline-block;
   color: #fff;
   border: 0;
-  margin-bottom: 100px;
+  border-radius: 12px;
+  width: 30%;
+  text-align: center;
+  margin: 40px auto;
   text-decoration: none;
   cursor: pointer;
   font-family: inherit;
